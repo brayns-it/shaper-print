@@ -125,8 +125,10 @@
     <Compile Include="SqlServerTypes\Loader.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LICENSE" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\Riccobono Spooler.pubxml" />
+    <Content Include="README.md" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
