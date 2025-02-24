@@ -76,7 +76,7 @@ namespace ShaperPrint
 
         public void AddException(Exception ex)
         {
-            _messages.Add("Error: " + ex.Message);
+            _messages.Add("Error: " + ex.Message + " " + ex.StackTrace.Replace("\r", " ").Replace("\n", " "));
         }
 
         public void Complete()
@@ -290,6 +290,7 @@ namespace ShaperPrint
             Microsoft.Reporting.WebForms.ReportViewer repView = new Microsoft.Reporting.WebForms.ReportViewer();
 
             MemoryStream defStream = new MemoryStream(Report);
+            repView.ProcessingMode = Microsoft.Reporting.WebForms.ProcessingMode.Local;
             repView.LocalReport.LoadReportDefinition(defStream);
             defStream.Close();
 

@@ -52,6 +52,9 @@ namespace ShaperPrint
 
                     switch (jRequest["request"].ToString())
                     {
+                        case "test":
+                            break;
+
                         case "print":
                             Print(jRequest);
                             break;
@@ -64,11 +67,11 @@ namespace ShaperPrint
                             throw new Exception("Invalid request");
                     }
 
-                    JObject jError = new JObject();
-                    jError["status"] = _job.Enqueued ? "enqueued" : "success";
+                    JObject jResult = new JObject();
+                    jResult["status"] = _job.Enqueued ? "enqueued" : "success";
                     if (_job.Result != null)
-                        jError["result"] = Convert.ToBase64String(_job.Result);
-                    Response.Write(jError.ToString());
+                        jResult["result"] = Convert.ToBase64String(_job.Result);
+                    Response.Write(jResult.ToString());
                 }
                 catch (Exception ex)
                 {
