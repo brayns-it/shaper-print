@@ -255,10 +255,13 @@ namespace ShaperPrint
                 {
                     _messages.Add("Rendered RDL to PNG");
 
+                    int dpiX = PrintDocument.PrinterSettings.DefaultPageSettings.PrinterResolution.X;
+                    int dpiY = PrintDocument.PrinterSettings.DefaultPageSettings.PrinterResolution.Y;
+
                     var devinfo = "<DeviceInfo>" +
                         "<OutputFormat>PNG</OutputFormat>" +
-                        "<DpiX>" + PrintDocument.PrinterSettings.DefaultPageSettings.PrinterResolution.X + "</DpiX>" +
-                        "<DpiY>" + PrintDocument.PrinterSettings.DefaultPageSettings.PrinterResolution.X + "</DpiY>" +
+                        "<DpiX>" + dpiX.ToString() + "</DpiX>" +
+                        "<DpiY>" + dpiY.ToString() + "</DpiY>" +
                         "</DeviceInfo>";
 
                     List<MemoryStream> streams = new List<MemoryStream>();
@@ -272,7 +275,11 @@ namespace ShaperPrint
                     }, out wrns);
 
                     foreach (MemoryStream ms in streams)
-                        Pages.Add(Image.FromStream(ms));
+                    {
+                        var bmp = (Bitmap)Image.FromStream(ms);
+                        bmp.SetResolution(dpiX, dpiY);
+                        Pages.Add(bmp);
+                    }
                 }
             };
 
