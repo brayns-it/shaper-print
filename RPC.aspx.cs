@@ -75,6 +75,9 @@ namespace ShaperPrint
                 }
                 catch (Exception ex)
                 {
+                    while (ex.InnerException != null)
+                        ex = ex.InnerException;
+
                     JObject jError = new JObject();
                     jError["status"] = "error";
                     jError["message"] = ex.Message;
@@ -105,10 +108,23 @@ namespace ShaperPrint
             switch (jRequest["format"].ToString())
             {
                 case "RDL":
-                    if (_job.DeviceType == DeviceType.None)
-                        _job.RenderRDLtoPDF();
-                    else
-                        _job.PrintRDL();
+                    switch (_job.DeviceType)
+                    {
+                        case DeviceType.None:
+                            _job.RenderRDLtoPDF();
+                            break;
+                        case DeviceType.Printer:
+                            _job.PrintRDL();
+                            break;
+                        case DeviceType.File:
+                            _job.RenderRDLtoPDF();
+                            _job.Content = _job.Result;
+                            _job.WriteToPath();
+                            break;
+
+                        default:
+                            throw new Exception("Invalid device");
+                    }
                     break;
 
                 default:
