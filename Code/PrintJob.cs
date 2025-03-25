@@ -19,7 +19,7 @@ namespace ShaperPrint
         File,
         Printer
     }
-    
+
     public delegate void CreatingHandler();
 
     public class PrintJob
@@ -217,10 +217,28 @@ namespace ShaperPrint
 
                     foreach (FileInfo fi in di.GetFiles(pfix + "*.png"))
                     {
-                        fs = new FileStream(fi.FullName, FileMode.Open, FileAccess.Read);
-                        byte[] buf = new byte[fs.Length];
-                        fs.Read(buf, 0, buf.Length);
-                        fs.Close();
+                        byte[] buf = new byte[0];
+                        bool readed = false;
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            try
+                            {
+                                fs = new FileStream(fi.FullName, FileMode.Open, FileAccess.Read);
+                                buf = new byte[fs.Length];
+                                fs.Read(buf, 0, buf.Length);
+                                fs.Close();
+                                readed = true;
+                                break;
+                            }
+                            catch
+                            {
+                                Thread.Sleep(1000);
+                            }
+                        }
+
+                        if (!readed)
+                            throw new Exception("Unable to access file " + fi.Name);
 
                         Pages.Add(Image.FromStream(new MemoryStream(buf)));
                     }
